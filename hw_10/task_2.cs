@@ -1,133 +1,76 @@
-class Book
+abstract class Shape
 {
-    public string Title { get; set; }
-    public string Author { get; set; }
-    private int year;
-
-    public int Year
-    {
-        get { return year; }
-        set
-        {
-            if (value < 0)
-                throw new ArgumentException("Year cannot be negative");
-            year = value;
-        }
-    }
-
-    public Book(string title, string author, int year)
-    {
-        Title = title;
-        Author = author;
-        Year = year;
-    }
-
-    public override string ToString()
-    {
-        return $"{Title} by {Author}, published in {Year}";
-    }
-
-    public static bool operator ==(Book b1, Book b2)
-    {
-        return b1?.Title == b2?.Title && b1?.Author == b2?.Author && b1?.Year == b2?.Year;
-    }
-
-    public static bool operator !=(Book b1, Book b2) => !(b1 == b2);
+    public abstract double GetArea();
 }
 
-class Library
+class Rectangle : Shape
 {
-    private Book[] books;
-    private int count;
+    private double width, height;
 
-    public Library(int size)
+    public Rectangle(double width, double height)
     {
-        books = new Book[size];
-        count = 0;
+        this.width = width;
+        this.height = height;
     }
 
-    public void AddBook(Book book)
+    public override double GetArea() => width * height;
+}
+
+class Circle : Shape
+{
+    private double radius;
+    private const double PI = 3.141592;
+
+    public Circle(double radius)
     {
-        if (count >= books.Length)
-        {
-            Console.WriteLine("Library is full, cannot add more books.");
-            return;
-        }
-        books[count++] = book;
+        this.radius = radius;
     }
 
-    public void RemoveBook(string title)
-    {
-        int index = Array.FindIndex(books, 0, count, b => b?.Title == title);
-        if (index < 0)
-        {
-            Console.WriteLine("Book not found.");
-            return;
-        }
+    public override double GetArea() => PI * radius * radius;
+}
 
-        books[index] = books[--count];
-        Console.WriteLine($"Book '{title}' removed.");
+class Triangle : Shape
+{
+    private double base_length, height;
+
+    public Triangle(double base_length, double height)
+    {
+        this.base_length = base_length;
+        this.height = height;
     }
 
-    public bool ContainsBook(string title) => books.Any(b => b?.Title == title);
+    public override double GetArea() => 0.5 * base_length * height;
+}
 
-    public Book this[int index]
+class Trapezoid : Shape
+{
+    private double base1, base2, height;
+
+    public Trapezoid(double base1, double base2, double height)
     {
-        get
-        {
-            if (index < 0 || index >= count)
-                throw new IndexOutOfRangeException("Index is out of range");
-            return books[index];
-        }
-        set
-        {
-            if (index < 0 || index >= books.Length)
-                throw new IndexOutOfRangeException("Index is out of range");
-            books[index] = value;
-        }
+        this.base1 = base1;
+        this.base2 = base2;
+        this.height = height;
     }
 
-    public void DisplayBooks()
-    {
-        if (count == 0)
-        {
-            Console.WriteLine("Library is empty.");
-            return;
-        }
-        Console.WriteLine("Library books:");
-        foreach (var book in books.Take(count))
-        {
-            Console.WriteLine(book);
-        }
-    }
-
-    public static Library operator +(Library library, Book book)
-    {
-        library.AddBook(book);
-        return library;
-    }
-
-    public static Library operator -(Library library, string title)
-    {
-        library.RemoveBook(title);
-        return library;
-    }
+    public override double GetArea() => 0.5 * (base1 + base2) * height;
 }
 
 class Program
 {
     static void Main()
     {
-        Library library = new Library(5);
+        Shape[] shapes = {
+            new Rectangle(4, 6),
+            new Circle(5),
+            new Triangle(6, 8),
+            new Trapezoid(4, 6, 8)
+        };
 
-        library += new Book("1984", "George Orwell", 1949);
-        library += new Book("Brave New World", "Aldous Huxley", 1932);
-        library += new Book("Fahrenheit 451", "Ray Bradbury", 1953);
-        library.DisplayBooks();
-
-        Console.WriteLine(library.ContainsBook("1984") ? "Book found" : "Book not found");
-
-        library -= "1984";
-        library.DisplayBooks();
+        foreach (Shape shape in shapes)
+        {
+            Console.WriteLine($"Area: {shape.GetArea()}");
+        }
     }
 }
+
