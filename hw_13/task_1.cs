@@ -1,37 +1,50 @@
-abstract class Worker
+interface ICalc
 {
-    public abstract void Print();
+    int Less(int valueToCompare);
+    int Greater(int valueToCompare);
 }
 
-class President : Worker
+class ArrayClass : ICalc
 {
-    public override void Print() => Console.WriteLine("I am President");
-}
+    private int[] numbers;
 
-class Security : Worker
-{
-    public override void Print() => Console.WriteLine("I am Security");
-}
+    public ArrayClass(int[] numbers)
+    {
+        this.numbers = numbers;
+    }
 
-class Manager : Worker
-{
-    public override void Print() => Console.WriteLine("I am Manager");
-}
+    public int Less(int valueToCompare)
+    {
+        int count = 0;
+        foreach (int num in numbers)
+        {
+            if (num < valueToCompare)
+                count++;
+        }
+        return count;
+    }
 
-class Engineer : Worker
-{
-    public override void Print() => Console.WriteLine("I am Engineer");
+    public int Greater(int valueToCompare)
+    {
+        int count = 0;
+        foreach (int num in numbers)
+        {
+            if (num > valueToCompare)
+                count++;
+        }
+        return count;
+    }
 }
 
 class Program
 {
     static void Main()
     {
-        Worker[] workers = { new President(), new Security(), new Manager(), new Engineer() };
+        int[] testArray = { 1, 5, 8, 10, 3, 7, 6 };
+        ArrayClass arrayObj = new ArrayClass(testArray);
 
-        foreach (Worker worker in workers)
-        {
-            worker.Print();
-        }
+        int valueToCompare = 5;
+        Console.WriteLine($"Count of numbers less than {valueToCompare}: {arrayObj.Less(valueToCompare)}");
+        Console.WriteLine($"Count of numbers greater than {valueToCompare}: {arrayObj.Greater(valueToCompare)}");
     }
 }

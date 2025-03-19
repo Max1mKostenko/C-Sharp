@@ -1,76 +1,49 @@
-abstract class Shape
+interface IOutput2
 {
-    public abstract double GetArea();
+    void ShowEven();
+    void ShowOdd();
 }
 
-class Rectangle : Shape
+class ArrayClass : IOutput2
 {
-    private double width, height;
+    private int[] array;
 
-    public Rectangle(double width, double height)
+    public ArrayClass(int[] arr)
     {
-        this.width = width;
-        this.height = height;
+        array = arr;
     }
 
-    public override double GetArea() => width * height;
-}
-
-class Circle : Shape
-{
-    private double radius;
-    private const double PI = 3.141592;
-
-    public Circle(double radius)
+    public void ShowEven()
     {
-        this.radius = radius;
+        Console.Write("Even numbers: ");
+        foreach (int num in array)
+        {
+            if (num % 2 == 0)
+                Console.Write(num + " ");
+        }
+        Console.WriteLine();
     }
 
-    public override double GetArea() => PI * radius * radius;
-}
-
-class Triangle : Shape
-{
-    private double base_length, height;
-
-    public Triangle(double base_length, double height)
+    public void ShowOdd()
     {
-        this.base_length = base_length;
-        this.height = height;
+        Console.Write("Odd numbers: ");
+        foreach (int num in array)
+        {
+            if (num % 2 != 0)
+                Console.Write(num + " ");
+        }
+        Console.WriteLine();
     }
-
-    public override double GetArea() => 0.5 * base_length * height;
-}
-
-class Trapezoid : Shape
-{
-    private double base1, base2, height;
-
-    public Trapezoid(double base1, double base2, double height)
-    {
-        this.base1 = base1;
-        this.base2 = base2;
-        this.height = height;
-    }
-
-    public override double GetArea() => 0.5 * (base1 + base2) * height;
 }
 
 class Program
 {
     static void Main()
     {
-        Shape[] shapes = {
-            new Rectangle(4, 6),
-            new Circle(5),
-            new Triangle(6, 8),
-            new Trapezoid(4, 6, 8)
-        };
+        int[] data = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+        ArrayClass arrayObj = new ArrayClass(data);
 
-        foreach (Shape shape in shapes)
-        {
-            Console.WriteLine($"Area: {shape.GetArea()}");
-        }
+        arrayObj.ShowEven();
+        arrayObj.ShowOdd();
     }
 }
-

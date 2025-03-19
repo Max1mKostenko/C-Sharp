@@ -1,76 +1,29 @@
-abstract class Shape
+using System;
+using System.Linq;
+
+interface ICalc2
 {
-    public abstract double GetArea();
+    int CountDistinct();
+    int EqualToValue(int valueToCompare);
 }
 
-class Rectangle : Shape
+class ArrayClass : ICalc2
 {
-    private double width, height;
+    private int[] array;
 
-    public Rectangle(double width, double height)
+    public ArrayClass(int[] arr)
     {
-        this.width = width;
-        this.height = height;
+        array = arr;
     }
 
-    public override double GetArea() => width * height;
-}
-
-class Circle : Shape
-{
-    private double radius;
-    private const double PI = 3.141592;
-
-    public Circle(double radius)
+    public int CountDistinct()
     {
-        this.radius = radius;
+        return array.Distinct().Count();
     }
 
-    public override double GetArea() => PI * radius * radius;
-}
-
-class Triangle : Shape
-{
-    private double base_length, height;
-
-    public Triangle(double base_length, double height)
+    public int EqualToValue(int valueToCompare)
     {
-        this.base_length = base_length;
-        this.height = height;
-    }
-
-    public override double GetArea() => 0.5 * base_length * height;
-}
-
-class Trapezoid : Shape
-{
-    private double base1, base2, height;
-
-    public Trapezoid(double base1, double base2, double height)
-    {
-        this.base1 = base1;
-        this.base2 = base2;
-        this.height = height;
-    }
-
-    public override double GetArea() => 0.5 * (base1 + base2) * height;
-}
-
-class CompositeShape : Shape
-{
-    private Shape shape1, shape2, shape3, shape4;
-
-    public CompositeShape(Shape shape1, Shape shape2, Shape shape3, Shape shape4)
-    {
-        this.shape1 = shape1;
-        this.shape2 = shape2;
-        this.shape3 = shape3;
-        this.shape4 = shape4;
-    }
-
-    public override double GetArea()
-    {
-        return shape1.GetArea() + shape2.GetArea() + shape3.GetArea() + shape4.GetArea();
+        return array.Count(x => x == valueToCompare);
     }
 }
 
@@ -78,13 +31,10 @@ class Program
 {
     static void Main()
     {
-        Shape rectangle = new Rectangle(4, 6);
-        Shape circle = new Circle(5);
-        Shape triangle = new Triangle(6, 8);
-        Shape trapezoid = new Trapezoid(4, 6, 8);
+        int[] data = { 1, 2, 2, 3, 4, 4, 4, 5 };
+        ArrayClass arrayObj = new ArrayClass(data);
 
-        CompositeShape compositeShape = new CompositeShape(rectangle, circle, triangle, trapezoid);
-
-        Console.WriteLine($"Total Composite Shape Area: {compositeShape.GetArea()}");
+        Console.WriteLine("Distinct count: " + arrayObj.CountDistinct());
+        Console.WriteLine("Equal to 4: " + arrayObj.EqualToValue(4));
     }
 }
