@@ -1,76 +1,70 @@
-abstract class Shape
-{
-    public abstract double GetArea();
-}
+using System;
+using System.Collections;
+using System.Collections.Generic;
 
-class Rectangle : Shape
+class Car
 {
-    private double width, height;
+    public string Model { get; set; }
+    public int Year { get; set; }
 
-    public Rectangle(double width, double height)
+    public Car(string model, int year)
     {
-        this.width = width;
-        this.height = height;
+        Model = model;
+        Year = year;
     }
 
-    public override double GetArea() => width * height;
+    public override string ToString()
+    {
+        return $"Model: {Model}, Year: {Year}";
+    }
 }
 
-class Circle : Shape
+class Garage : IEnumerable<Car>
 {
-    private double radius;
-    private const double PI = 3.141592;
+    private List<Car> cars;
 
-    public Circle(double radius)
+    public Garage(List<Car> cars)
     {
-        this.radius = radius;
+        this.cars = cars;
     }
 
-    public override double GetArea() => PI * radius * radius;
-}
-
-class Triangle : Shape
-{
-    private double base_length, height;
-
-    public Triangle(double base_length, double height)
+    public IEnumerator<Car> GetEnumerator()
     {
-        this.base_length = base_length;
-        this.height = height;
+        foreach (var car in cars)
+        {
+            yield return car;
+        }
     }
 
-    public override double GetArea() => 0.5 * base_length * height;
-}
-
-class Trapezoid : Shape
-{
-    private double base1, base2, height;
-
-    public Trapezoid(double base1, double base2, double height)
+    IEnumerator IEnumerable.GetEnumerator()
     {
-        this.base1 = base1;
-        this.base2 = base2;
-        this.height = height;
+        return GetEnumerator();
     }
 
-    public override double GetArea() => 0.5 * (base1 + base2) * height;
-}
-
-class CompositeShape : Shape
-{
-    private Shape shape1, shape2, shape3, shape4;
-
-    public CompositeShape(Shape shape1, Shape shape2, Shape shape3, Shape shape4)
+    public void AddCar(Car car)
     {
-        this.shape1 = shape1;
-        this.shape2 = shape2;
-        this.shape3 = shape3;
-        this.shape4 = shape4;
+        cars.Add(car);
     }
 
-    public override double GetArea()
+    public void RemoveCar(int index)
     {
-        return shape1.GetArea() + shape2.GetArea() + shape3.GetArea() + shape4.GetArea();
+        if (index >= 0 && index < cars.Count)
+        {
+            cars.RemoveAt(index);
+        }
+        else
+        {
+            Console.WriteLine("Invalid index!");
+        }
+    }
+
+    public void DisplayCars()
+    {
+        Console.WriteLine("Cars currently in the garage:");
+        foreach (var car in cars)
+        {
+            Console.WriteLine(car);
+        }
     }
 }
 
@@ -78,13 +72,26 @@ class Program
 {
     static void Main()
     {
-        Shape rectangle = new Rectangle(4, 6);
-        Shape circle = new Circle(5);
-        Shape triangle = new Triangle(6, 8);
-        Shape trapezoid = new Trapezoid(4, 6, 8);
+        Garage garage = new Garage(new List<Car>
+        {
+            new Car("Toyota Corolla", 2020),
+            new Car("BMW X5", 2018),
+            new Car("Audi A6", 2022),
+            new Car("Mercedes-Benz C-Class", 2021)
+        });
 
-        CompositeShape compositeShape = new CompositeShape(rectangle, circle, triangle, trapezoid);
+        foreach (var car in garage)
+        {
+            Console.WriteLine(car);
+        }
 
-        Console.WriteLine($"Total Composite Shape Area: {compositeShape.GetArea()}");
+        Console.WriteLine("\nAdding a new car");
+        garage.AddCar(new Car("Honda Civic", 2019));
+        garage.DisplayCars();
+
+        Console.WriteLine("\nRemoving car at index 2");
+        garage.RemoveCar(2);
+        garage.DisplayCars();
     }
 }
+ 
