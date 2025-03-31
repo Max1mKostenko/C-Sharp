@@ -1,32 +1,139 @@
+using System.Collections.ObjectModel;
+
+class CountryCities
+{
+    private Dictionary<string, ObservableCollection<string>> countries = new();
+
+    public void AddCountry(string country)
+    {
+        if (!countries.ContainsKey(country))
+        {
+            countries[country] = new ObservableCollection<string>();
+            Console.WriteLine($"Country '{country}' added.");
+        }
+        else
+        {
+            Console.WriteLine($"Country '{country}' already exists.");
+        }
+    }
+
+    public void AddCity(string country, string city)
+    {
+        if (countries.ContainsKey(country))
+        {
+            var cities = countries[country];
+            if (!cities.Contains(city))
+            {
+                cities.Add(city);
+                Console.WriteLine($"City '{city}' added to {country}.");
+            }
+            else
+            {
+                Console.WriteLine($"City '{city}' already exists in {country}.");
+            }
+        }
+        else
+        {
+            Console.WriteLine($"Country '{country}' not found.");
+        }
+    }
+
+    public void RemoveCity(string country, string city)
+    {
+        if (countries.ContainsKey(country))
+        {
+            var cities = countries[country];
+            if (cities.Remove(city))
+            {
+                Console.WriteLine($"City '{city}' removed from {country}.");
+            }
+            else
+            {
+                Console.WriteLine($"City '{city}' not found in {country}.");
+            }
+        }
+        else
+        {
+            Console.WriteLine($"Country '{country}' not found.");
+        }
+    }
+
+    public void RemoveCountry(string country)
+    {
+        if (countries.ContainsKey(country))
+        {
+            countries.Remove(country);
+            Console.WriteLine($"Country '{country}' removed.");
+        }
+        else
+        {
+            Console.WriteLine($"Country '{country}' not found.");
+        }
+    }
+
+    public void ReplaceCity(string country, string oldCity, string newCity)
+    {
+        if (countries.ContainsKey(country))
+        {
+            var cities = countries[country];
+            int index = cities.IndexOf(oldCity);
+            if (index != -1)
+            {
+                cities[index] = newCity;
+                Console.WriteLine($"City '{oldCity}' replaced with '{newCity}' in {country}.");
+            }
+            else
+            {
+                Console.WriteLine($"City '{oldCity}' not found in {country}.");
+            }
+        }
+        else
+        {
+            Console.WriteLine($"Country '{country}' not found.");
+        }
+    }
+
+    public int CountCities(string country)
+    {
+        return countries.ContainsKey(country) ? countries[country].Count : 0;
+    }
+
+    public void ShowCountries()
+    {
+        Console.WriteLine("Countries:");
+        foreach (var country in countries.Keys)
+        {
+            Console.WriteLine(country);
+        }
+    }
+
+    public void ShowCities(string country)
+    {
+        if (countries.ContainsKey(country))
+        {
+            var cities = countries[country];
+            Console.WriteLine($"Cities in {country}: {string.Join(", ", cities)}");
+        }
+        else
+        {
+            Console.WriteLine($"Country '{country}' not found.");
+        }
+    }
+}
+
 class Program
 {
-    static void ShowCurrentTime() => Console.WriteLine(DateTime.Now.ToString("HH:mm:ss"));
-    static void ShowCurrentDate() => Console.WriteLine(DateTime.Now.ToString("yyyy-MM-dd"));
-    static void ShowCurrentDayOfWeek() => Console.WriteLine(DateTime.Now.DayOfWeek);
-    static bool IsLeapYear(int year) => DateTime.IsLeapYear(year);
-    static bool IsWeekend(DayOfWeek day) => day == DayOfWeek.Saturday || day == DayOfWeek.Sunday;
-    static double TriangleArea(double baseLength, double height) => 0.5 * baseLength * height;
-    static double RectangleArea(double width, double height) => width * height;
-
-    static void Main(string[] args)
+    static void Main()
     {
-        Action showTime = ShowCurrentTime;
-        Action showDate = ShowCurrentDate;
-        Action showDay = ShowCurrentDayOfWeek;
-
-        Predicate<int> isLeap = IsLeapYear;
-        Predicate<DayOfWeek> isWeekend = IsWeekend;
-
-        Func<double, double, double> calcTriangleArea = TriangleArea;
-        Func<double, double, double> calcRectangleArea = RectangleArea;
-
-        showTime();
-        showDate();
-        showDay();
-
-        Console.WriteLine(isLeap(2024));
-        Console.WriteLine(isWeekend(DayOfWeek.Sunday));
-        Console.WriteLine(calcTriangleArea(10, 5));
-        Console.WriteLine(calcRectangleArea(8, 4));
+        CountryCities manager = new();
+        manager.AddCountry("USA");
+        manager.AddCity("USA", "New York");
+        manager.AddCity("USA", "Los Angeles");
+        manager.ShowCities("USA");
+        manager.ReplaceCity("USA", "Los Angeles", "San Francisco");
+        manager.ShowCities("USA");
+        manager.RemoveCity("USA", "New York");
+        manager.ShowCities("USA");
+        manager.ShowCountries();
     }
 }
